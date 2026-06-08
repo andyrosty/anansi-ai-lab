@@ -3,31 +3,7 @@ Ansible AI Lab
 
 This repository contains a small Ansible configuration for bootstrapping and checking Linux hosts that you want to use as an "AI lab" (for development, experimentation, or demos).
 
-The playbooks assume Debian/Ubuntu-based machines with `apt` available.
-
-Project layout
---------------
-
-- `ansible.cfg` – Local Ansible configuration.
-- `inventory/hosts.yml` – Inventory with the `ai_lab` group and example host.
-- `group_vars/ai_lab/` – Group‑level variables for hosts in the `ai_lab` group (currently empty, can be extended).
-- `playbooks/preflight.yml` – Runs basic connectivity and environment checks.
-- `playbooks/bootstrap.yml` – Installs base tools and Python AI packages on the target node(s).
-- `roles/` – Reserved for reusable roles (none defined yet).
-
-Requirements
-------------
-
-Control machine (where you run Ansible):
-
-- Python 3.x
-- Ansible 2.13+ (or any reasonably recent version)
-
-Managed nodes (targets in the `ai_lab` group):
-
-- Debian/Ubuntu-based Linux
-- SSH access from the control machine
-- A user account with sudo privileges (configured as `ansible_user` in the inventory)
+The playbooks uses Debian/Ubuntu-based machines.
 
 Inventory
 ---------
