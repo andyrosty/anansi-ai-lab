@@ -83,6 +83,21 @@ Customization
 Usage examples
 --------------
 
+Using make targets (shorter commands):
+
+```bash
+make ping
+make preflight
+make bootstrap
+```
+
+Common overrides:
+
+```bash
+make preflight PLAYBOOK_ARGS="--limit ai-lab-01"
+make bootstrap PLAYBOOK_ARGS="--ask-become-pass --limit ai-lab-01"
+```
+
 Ping all AI lab nodes to verify connectivity:
 
 ```bash

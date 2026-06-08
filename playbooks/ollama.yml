@@ -1,0 +1,52 @@
+---
+- name: Install and verify Ollama
+  hosts: ai_lab
+  become: true
+  gather_facts: true
+
+  tasks:
+    - name: Check if Ollama is installed
+      ansible.builtin.command: which ollama
+      register: ollama_check
+      changed_when: false
+      failed_when: false
+
+    - name: Download Ollama install script
+      ansible.builtin.get_url:
+        url: https://ollama.com/install.sh
+        dest: /tmp/install-ollama.sh
+        mode: "0755"
+      when: ollama_check.rc != 0
+
+    - name: Install Ollama
+      ansible.builtin.command: /tmp/install-ollama.sh
+      when: ollama_check.rc != 0
+
+    - name: Ensure Ollama service is enabled and running
+      ansible.builtin.systemd:
+        name: ollama
+        enabled: true
+        state: started
+
+    - name: Check Ollama version
+      ansible.builtin.command: ollama --version
+      register: ollama_version
+      changed_when: false
+
+    - name: Display Ollama version
+      ansible.builtin.debug:
+        var: ollama_version.stdout
+
+    - name: Pull small starter model
+      ansible.builtin.command: ollama pull llama3.2:1b
+      register: model_pull
+      changed_when: "'success' in model_pull.stdout or 'pulling' in model_pull.stdout"
+
+    - name: Test model
+      ansible.builtin.command: ollama run llama3.2:1b "Say hello from ai-lab-01 in one sentence."
+      register: ollama_test
+      changed_when: false
+
+    - name: Display model test
+      ansible.builtin.debug:
+        var: ollama_test.stdout_lines
