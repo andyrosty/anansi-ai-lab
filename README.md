@@ -182,6 +182,9 @@ Available shortcuts:
 - `make ping`
 - `make preflight`
 - `make bootstrap`
+- `make swap`
+- `make ollama`
+- `make status`
 - `make syntax-check`
 - `make dry-run`
 
@@ -192,7 +195,7 @@ make preflight PLAYBOOK_ARGS="--limit ai-lab-01"
 make bootstrap PLAYBOOK_ARGS="--ask-become-pass --limit ai-lab-01"
 ```
 
-`syntax-check` and `dry-run` currently cover `preflight.yml` and `bootstrap.yml`.
+`syntax-check` and `dry-run` cover all playbooks in this repo (`preflight`, `bootstrap`, `swap`, `ollama`, `status`).
 
 Customization
 -------------

@@ -1,8 +1,11 @@
-.PHONY: help ping preflight bootstrap syntax-check dry-run
+.PHONY: help ping preflight bootstrap swap ollama status syntax-check dry-run
+
+.DEFAULT_GOAL := help
 
 INVENTORY ?= inventory/hosts.yml
 GROUP ?= ai_lab
 PLAYBOOK_DIR ?= playbooks
+PLAYBOOKS ?= preflight bootstrap swap ollama status
 
 ANSIBLE ?= ansible
 ANSIBLE_PLAYBOOK ?= ansible-playbook
@@ -14,8 +17,11 @@ help:
 	@printf "  make ping           # ansible ping to $(GROUP)\n"
 	@printf "  make preflight      # run preflight checks\n"
 	@printf "  make bootstrap      # bootstrap AI lab hosts\n"
+	@printf "  make swap           # create and enable swap\n"
+	@printf "  make ollama         # install and test Ollama\n"
+	@printf "  make status         # check runtime AI lab status\n"
 	@printf "  make syntax-check   # validate playbook syntax\n"
-	@printf "  make dry-run        # check-mode run for preflight/bootstrap\n"
+	@printf "  make dry-run        # check-mode run for all playbooks\n"
 	@printf "\nOverrides:\n"
 	@printf "  INVENTORY=inventory/hosts.yml GROUP=ai_lab\n"
 	@printf "  ANSIBLE_ARGS='--limit ai-lab-01'\n"
@@ -30,10 +36,21 @@ preflight:
 bootstrap:
 	$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK_DIR)/bootstrap.yml $(PLAYBOOK_ARGS)
 
+swap:
+	$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK_DIR)/swap.yml $(PLAYBOOK_ARGS)
+
+ollama:
+	$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK_DIR)/ollama.yml $(PLAYBOOK_ARGS)
+
+status:
+	$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK_DIR)/status.yml $(PLAYBOOK_ARGS)
+
 syntax-check:
-	$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK_DIR)/preflight.yml --syntax-check
-	$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK_DIR)/bootstrap.yml --syntax-check
+	@for pb in $(PLAYBOOKS); do \
+		$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK_DIR)/$$pb.yml --syntax-check || exit $$?; \
+	done
 
 dry-run:
-	$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK_DIR)/preflight.yml --check --diff $(PLAYBOOK_ARGS)
-	$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK_DIR)/bootstrap.yml --check --diff $(PLAYBOOK_ARGS)
+	@for pb in $(PLAYBOOKS); do \
+		$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK_DIR)/$$pb.yml --check --diff $(PLAYBOOK_ARGS) || exit $$?; \
+	done
