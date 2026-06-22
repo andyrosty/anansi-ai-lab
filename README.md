@@ -29,6 +29,7 @@ Repository layout
 - `playbooks/ollama.yml`: Ollama install/start, model pull, and smoke test
 - `playbooks/status.yml`: Runtime checks for system and Ollama
 - `ansible.cfg`: Default inventory path and Ansible behavior
+- `collections/requirements.yml`: Required Ansible collections
 - `Makefile`: Shortcuts for common commands
 
 Inventory
@@ -186,6 +187,7 @@ Available shortcuts:
 - `make ollama`
 - `make status`
 - `make syntax-check`
+- `make lint`
 - `make dry-run`
 
 Examples:
@@ -195,7 +197,7 @@ make preflight PLAYBOOK_ARGS="--limit ai-lab-01"
 make bootstrap PLAYBOOK_ARGS="--ask-become-pass --limit ai-lab-01"
 ```
 
-`syntax-check` and `dry-run` cover all playbooks in this repo (`preflight`, `bootstrap`, `swap`, `ollama`, `status`).
+`syntax-check` and `dry-run` cover all playbooks in this repo (`preflight`, `bootstrap`, `swap`, `ollama`, `status`). `lint` runs `ansible-lint`.
 
 Customization
 -------------
