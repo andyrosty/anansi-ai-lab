@@ -21,7 +21,6 @@
     - name: Install Ollama
       ansible.builtin.command: /tmp/install-ollama.sh
       when: ollama_check.rc != 0
-      changed_when: ollama_check.rc != 0
 
     - name: Ensure Ollama service is enabled and running
       ansible.builtin.systemd:

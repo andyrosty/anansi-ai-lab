@@ -50,7 +50,7 @@
           - pip
           - wheel
           - setuptools
-        state: present
+        state: latest
         virtualenv: /opt/ai-lab/.venv
 
     - name: Install Python AI starter packages

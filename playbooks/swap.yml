@@ -17,7 +17,6 @@
     - name: Create swap file
       ansible.builtin.command: "fallocate -l {{ swap_size_mb }}M {{ swap_file }}"
       when: not swap_stat.stat.exists
-      changed_when: not swap_stat.stat.exists
 
     - name: Set swap file permissions
       ansible.builtin.file:
@@ -34,7 +33,6 @@
     - name: Format swap file
       ansible.builtin.command: "mkswap {{ swap_file }}"
       when: "'swap file' not in swap_file_type.stdout"
-      changed_when: "'swap file' not in swap_file_type.stdout"
 
     - name: Enable swap
       ansible.builtin.command: "swapon {{ swap_file }}"
@@ -45,7 +43,7 @@
         - "'already active' not in swapon_result.stderr"
 
     - name: Persist swap in fstab
-      ansible.posix.mount:
+      ansible.builtin.mount:
         name: none
         src: "{{ swap_file }}"
         fstype: swap

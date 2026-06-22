@@ -1,4 +1,4 @@
-.PHONY: help ping preflight bootstrap swap ollama status syntax-check lint dry-run
+.PHONY: help ping preflight bootstrap swap ollama status syntax-check dry-run
 
 .DEFAULT_GOAL := help
 
@@ -21,7 +21,6 @@ help:
 	@printf "  make ollama         # install and test Ollama\n"
 	@printf "  make status         # check runtime AI lab status\n"
 	@printf "  make syntax-check   # validate playbook syntax\n"
-	@printf "  make lint           # run ansible-lint checks\n"
 	@printf "  make dry-run        # check-mode run for all playbooks\n"
 	@printf "\nOverrides:\n"
 	@printf "  INVENTORY=inventory/hosts.yml GROUP=ai_lab\n"
@@ -50,9 +49,6 @@ syntax-check:
 	@for pb in $(PLAYBOOKS); do \
 		$(ANSIBLE_PLAYBOOK) -i $(INVENTORY) $(PLAYBOOK_DIR)/$$pb.yml --syntax-check || exit $$?; \
 	done
-
-lint:
-	ansible-lint
 
 dry-run:
 	@for pb in $(PLAYBOOKS); do \
